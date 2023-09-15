@@ -3,64 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Конвертація зображення за допомогою Canvas</title>
+    <title>Маніпуляція зображення за допомогою Canvas</title>
   </head>
   <body>
-    <h1>Конвертація зображення за допомогою Canvas</h1>
+    <h1>Маніпуляція зображення за допомогою Canvas</h1>
 
     <input type="file" id="imageInput" accept="image/*" />
+    <label for="fileNameInput">Filename: </label>
+    <input id="fileNameInput" type="text" />
+    <label for="width">Width: </label>
+    <input type="number" value="0" id="width" />
+    <label for="height">Height: </label>
+    <input type="number" value="0" id="height" />
     <select id="outputFormat">
       <option value="jpeg">JPEG</option>
       <option value="png">PNG</option>
+      <option value="webp">WEBP</option>
     </select>
-    <button id="convertButton">Конвертувати</button>
-
+    <button id="convertButton">Convert</button>
     <br />
 
-    <a id="downloadLink" style="display: none" download="output_image"
-      >Завантажити</a
-    >
-
-    <script>
-      const fileInput = document.getElementById('imageInput')
-      const outputFormat = document.getElementById('outputFormat')
-      const convertButton = document.getElementById('convertButton')
-      const downloadLink = document.getElementById('downloadLink')
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-
-      fileInput.addEventListener('change', () => {
-        downloadLink.style.display = 'none'
-      })
-
-      convertButton.addEventListener('click', () => {
-        const selectedFormat = outputFormat.value
-
-        const selectedFile = fileInput.files[0]
-
-        if (selectedFile) {
-          const reader = new FileReader()
-
-          reader.readAsDataURL(selectedFile)
-
-          reader.onload = function () {
-            const img = new Image()
-            img.src = reader.result
-
-            img.onload = function () {
-              canvas.width = img.width
-              canvas.height = img.height
-
-              ctx.drawImage(img, 0, 0)
-
-              downloadLink.style.display = 'block'
-
-              const dataURL = canvas.toDataURL(`image/${selectedFormat}`) // 'image/img', 'image/webp', 'image/png'
-              downloadLink.href = dataURL
-            }
-          }
-        }
-      })
-    </script>
+    <div id="downloadLink"></div>
+    <canvas style="display: none" id="canvas"></canvas>
+    <script src="./script.js"></script>
   </body>
 </html>
