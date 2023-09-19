@@ -8,6 +8,9 @@ const heightInp = document.getElementById('height')
 const targetColorInp = document.getElementById('targetColor')
 const replacementColorInp = document.getElementById('replacementColor')
 const shouldDownloadBtn = document.getElementById('shouldDownload')
+const redCorrectionInput = document.getElementById('redCorrection')
+const greenCorrectionInput = document.getElementById('greenCorrection')
+const blueCorrectionInput = document.getElementById('blueCorrection')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
@@ -17,6 +20,9 @@ convertButton.addEventListener('click', () => {
   const selectedFormat = outputFormat.value
   const width = widthInp.value
   const height = heightInp.value
+  const redCorrection = redCorrectionInput.value
+  const greenCorrection = greenCorrectionInput.value
+  const blueCorrection = blueCorrectionInput.value
   const shouldDownload = shouldDownloadBtn.checked
   const fileName = fileNameInput.value || 'image'
   const selectedFile = fileInput.files[0]
@@ -38,6 +44,14 @@ convertButton.addEventListener('click', () => {
         ctx.drawImage(img, 0, 0, new_width, new_height)
 
         colorChanger(ctx, canvas, targetColor, replacementColor)
+
+        colorCorrection(
+          ctx,
+          canvas,
+          redCorrection,
+          greenCorrection,
+          blueCorrection
+        )
 
         canvas.style.display = 'block'
 
@@ -99,6 +113,29 @@ function compareColors(color1, color2) {
     color1[1] === color2[1] &&
     color1[2] === color2[2]
   )
+}
+
+function colorCorrection(
+  ctx,
+  canvas,
+  redCorrection,
+  greenCorrection,
+  blueCorrection
+) {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  const data = imageData.data
+
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = clamp(data[i] + redCorrection, 0, 255)
+    data[i + 1] = clamp(data[i + 1] + greenCorrection, 0, 255)
+    data[i + 2] = clamp(data[i + 2] + blueCorrection, 0, 255)
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max)
 }
 
 function downloadImage(dataURL, fileName, selectedFormat) {

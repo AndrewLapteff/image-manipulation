@@ -9,23 +9,43 @@
     <h1>Маніпуляція зображення за допомогою Canvas</h1>
 
     <input type="file" id="imageInput" accept="image/*" />
-    <label for="fileNameInput">Filename: </label>
-    <input id="fileNameInput" type="text" />
-    <label for="width">Width: </label>
-    <input type="number" value="0" id="width" />
-    <label for="height">Height: </label>
-    <input type="number" value="0" id="height" />
-    <label for="targetColor">Target Color:</label>
-    <input type="color" id="targetColor" value="#ff0000" />
-    <label for="replacementColor">Replacement Color:</label>
-    <input type="color" id="replacementColor" value="#0000ff" />
-    <label for="shouldDownload">Download?</label>
-    <input type="checkbox" id="shouldDownload" />
+
+    <br />
+    <br />
     <select id="outputFormat">
       <option value="jpeg">JPEG</option>
       <option value="png">PNG</option>
       <option value="webp">WEBP</option>
     </select>
+    <br />
+    <br />
+    <label for="width">Width: </label>
+    <input type="number" value="0" id="width" />
+    <label for="height">Height: </label>
+    <input type="number" value="0" id="height" />
+    <br />
+    <br />
+    <label for="targetColor">Target Color:</label>
+    <input type="color" id="targetColor" value="#ff0000" />
+    <label for="replacementColor">Replacement Color:</label>
+    <input type="color" id="replacementColor" value="#0000ff" />
+    <br />
+    <br />
+    <label for="redCorrection">Red Correction:</label>
+    <input type="range" id="redCorrection" min="-100" max="100" value="0" />
+    <label for="greenCorrection">Green Correction:</label>
+    <input type="range" id="greenCorrection" min="-100" max="100" value="0" />
+    <label for="blueCorrection">Blue Correction:</label>
+    <input type="range" id="blueCorrection" min="-100" max="100" value="0" />
+    <button id="applyCorrection">Apply Correction</button>
+    <br />
+    <br />
+    <label for="fileNameInput">Filename: </label>
+    <input id="fileNameInput" type="text" />
+    <label for="shouldDownload">Download?</label>
+    <input type="checkbox" id="shouldDownload" />
+    <br />
+    <br />
     <button id="convertButton">Convert</button>
     <br />
 
