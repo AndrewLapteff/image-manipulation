@@ -26,7 +26,6 @@ convertButton.addEventListener('click', () => {
   const shouldDownload = shouldDownloadBtn.checked
   const fileName = fileNameInput.value || 'image'
   const selectedFile = fileInput.files[0]
-
   if (selectedFile) {
     const reader = new FileReader()
 

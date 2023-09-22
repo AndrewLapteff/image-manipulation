@@ -6,10 +6,7 @@
     <title>Маніпуляція зображення за допомогою Canvas</title>
   </head>
   <body>
-    <h1>Маніпуляція зображення за допомогою Canvas</h1>
-
     <input type="file" id="imageInput" accept="image/*" />
-
     <br />
     <br />
     <select id="outputFormat">
@@ -31,13 +28,12 @@
     <input type="color" id="replacementColor" value="#0000ff" />
     <br />
     <br />
-    <label for="redCorrection">Red Correction:</label>
-    <input type="range" id="redCorrection" min="-100" max="100" value="0" />
-    <label for="greenCorrection">Green Correction:</label>
-    <input type="range" id="greenCorrection" min="-100" max="100" value="0" />
-    <label for="blueCorrection">Blue Correction:</label>
-    <input type="range" id="blueCorrection" min="-100" max="100" value="0" />
-    <button id="applyCorrection">Apply Correction</button>
+    <label for="redCorrection">Red:</label>
+    <input type="number" id="redCorrection" min="-255" max="255" />
+    <label for="greenCorrection">Green:</label>
+    <input type="number" id="greenCorrection" min="-255" max="255" />
+    <label for="blueCorrection">Blue:</label>
+    <input type="number" id="blueCorrection" min="-255" max="255" />
     <br />
     <br />
     <label for="fileNameInput">Filename: </label>
