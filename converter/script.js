@@ -11,6 +11,13 @@ const shouldDownloadBtn = document.getElementById('shouldDownload')
 const redCorrectionInput = document.getElementById('redCorrection')
 const greenCorrectionInput = document.getElementById('greenCorrection')
 const blueCorrectionInput = document.getElementById('blueCorrection')
+const transparencyInput = document.getElementById('transparency')
+const rowSplitInput = document.getElementById('rowSplit')
+const colSplitInput = document.getElementById('colSplit')
+const cropXInput = document.getElementById('cropX')
+const cropYInput = document.getElementById('cropY')
+const cropWidthInput = document.getElementById('cropWidth')
+const cropHeightInput = document.getElementById('cropHeight')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
@@ -25,6 +32,13 @@ convertButton.addEventListener('click', () => {
   const blueCorrection = blueCorrectionInput.value
   const shouldDownload = shouldDownloadBtn.checked
   const fileName = fileNameInput.value || 'image'
+  const transparency = transparencyInput.value / 100
+  const rowSplit = parseInt(rowSplitInput.value)
+  const colSplit = parseInt(colSplitInput.value)
+  const cropX = parseInt(cropXInput.value)
+  const cropY = parseInt(cropYInput.value)
+  const cropWidth = parseInt(cropWidthInput.value)
+  const cropHeight = parseInt(cropHeightInput.value)
   const selectedFile = fileInput.files[0]
   if (selectedFile) {
     const reader = new FileReader()
@@ -40,6 +54,9 @@ convertButton.addEventListener('click', () => {
 
         canvas.height = new_height
         canvas.width = new_width
+
+        ctx.globalAlpha = transparency
+
         ctx.drawImage(img, 0, 0, new_width, new_height)
 
         colorChanger(ctx, canvas, targetColor, replacementColor)
@@ -51,6 +68,8 @@ convertButton.addEventListener('click', () => {
           greenCorrection,
           blueCorrection
         )
+
+        crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight)
 
         canvas.style.display = 'block'
 
@@ -125,16 +144,12 @@ function colorCorrection(
   const data = imageData.data
 
   for (let i = 0; i < data.length; i += 4) {
-    data[i] = clamp(data[i] + redCorrection, 0, 255)
-    data[i + 1] = clamp(data[i + 1] + greenCorrection, 0, 255)
-    data[i + 2] = clamp(data[i + 2] + blueCorrection, 0, 255)
+    data[i] = data[i] + redCorrection / 1
+    data[i + 1] = data[i + 1] + greenCorrection / 1
+    data[i + 2] = data[i + 2] + blueCorrection / 1
   }
 
   ctx.putImageData(imageData, 0, 0)
-}
-
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max)
 }
 
 function downloadImage(dataURL, fileName, selectedFormat) {
@@ -142,4 +157,22 @@ function downloadImage(dataURL, fileName, selectedFormat) {
   a.href = dataURL
   a.download = `${fileName}.${selectedFormat}`
   a.click()
+}
+
+function crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight) {
+  const imageWidth = img.width // Отримання ширини завантаженого зображення
+  const imageHeight = img.height // Отримання висоти завантаженого зображення
+  const partWidth = imageWidth / colSplit // Розрахунок ширини кожної частини зображення
+  const partHeight = imageHeight / rowSplit // Розрахунок висоти кожної частини зображення
+
+  for (let row = 0; row < rowSplit; row++) {
+    // Цикл для рядків
+    for (let col = 0; col < colSplit; col++) {
+      // Цикл для стовпців
+      const partX = col * partWidth // Обчислення X-координати поточної частини
+      const partY = row * partHeight // Обчислення Y-координати поточної частини
+      // Видалення обраної області в поточній частині зображення
+      ctx.clearRect(partX + cropX, partY + cropY, cropWidth, cropHeight) // x, y, width, height
+    }
+  }
 }

@@ -36,6 +36,42 @@
     <input type="number" id="blueCorrection" min="-255" max="255" />
     <br />
     <br />
+    <label for="transparency">Transparency:</label>
+    <input
+      type="range"
+      value="100"
+      type="number"
+      id="transparency"
+      min="0"
+      max="100"
+    />
+    <br />
+    <br />
+    <input type="number" id="rowSplit" placeholder="Кількість рядків" />
+    <input type="number" id="colSplit" placeholder="Кількість стовпців" />
+    <input
+      type="number"
+      id="cropX"
+      placeholder="Початкова X координата для видалення"
+    />
+    <input
+      type="number"
+      id="cropY"
+      placeholder="Початкова Y координата для видалення"
+    />
+    <input
+      type="number"
+      id="cropWidth"
+      placeholder="Ширина області для видалення"
+    />
+    <input
+      type="number"
+      id="cropHeight"
+      placeholder="Висота області для видалення"
+    />
+    <br />
+    <br />
+
     <label for="fileNameInput">Filename: </label>
     <input id="fileNameInput" type="text" />
     <label for="shouldDownload">Download?</label>
