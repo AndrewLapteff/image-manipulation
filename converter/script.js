@@ -18,6 +18,7 @@ const cropXInput = document.getElementById('cropX')
 const cropYInput = document.getElementById('cropY')
 const cropWidthInput = document.getElementById('cropWidth')
 const cropHeightInput = document.getElementById('cropHeight')
+const contrastInput = document.getElementById('contrastInput')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
@@ -40,6 +41,7 @@ convertButton.addEventListener('click', () => {
   const cropWidth = parseInt(cropWidthInput.value)
   const cropHeight = parseInt(cropHeightInput.value)
   const selectedFile = fileInput.files[0]
+  const contrast = contrastInput.value
   if (selectedFile) {
     const reader = new FileReader()
 
@@ -70,6 +72,8 @@ convertButton.addEventListener('click', () => {
         )
 
         crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight)
+
+        contrastImage(canvas, contrast)
 
         canvas.style.display = 'block'
 
@@ -175,4 +179,24 @@ function crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight) {
       ctx.clearRect(partX + cropX, partY + cropY, cropWidth, cropHeight) // x, y, width, height
     }
   }
+}
+
+function contrastImage(canvas, contrast) {
+  // Отримуємо дані пікселів з канвасу
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  // Отримуємо масив даних пікселів (червоний, зелений, синій, альфа)
+  var d = imageData.data
+  // Коригуємо значення контрастності
+  contrast = contrast / 100 + 1 // Конвертуємо у десятковий формат та зміщуємо діапазон: [0..2]
+  // Обчислюємо поправку для контрасту
+  var intercept = 128 * (1 - contrast)
+  // Проходимо по кожному пікселю
+  for (var i = 0; i < d.length; i += 4) {
+    // Застосовуємо корекцію контрастності до червоного, зеленого та синього каналів
+    d[i] = d[i] * contrast + intercept // Червоний канал
+    d[i + 1] = d[i + 1] * contrast + intercept // Зелений канал
+    d[i + 2] = d[i + 2] * contrast + intercept // Синій канал
+  }
+  // Перевантажуємо дані зміненими даними пікселів на канвас
+  ctx.putImageData(imageData, 0, 0)
 }
