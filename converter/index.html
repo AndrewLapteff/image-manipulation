@@ -7,6 +7,7 @@
   </head>
   <body>
     <input type="file" id="imageInput" accept="image/*" />
+    <input type="file" id="imageInput2" accept="image/*" />
     <br />
     <br />
     <select id="outputFormat">
@@ -47,6 +48,7 @@
     />
     <br />
     <br />
+    <input type="number" id="numClones" placeholder="Кількість частин" />
     <input type="number" id="rowSplit" placeholder="Кількість рядків" />
     <input type="number" id="colSplit" placeholder="Кількість стовпців" />
     <input
@@ -84,6 +86,25 @@
     <input id="fileNameInput" type="text" />
     <label for="shouldDownload">Download?</label>
     <input type="checkbox" id="shouldDownload" />
+    <br />
+    <br />
+    <select id="mergeDirection">
+      <option selected="true" value="horizontal">Горизонтально</option>
+      <option value="vertical">Вертикально</option>
+    </select>
+    <br />
+    <br />
+    <input type="text" id="watermarkText" placeholder="Watermark Text" />
+    <input type="number" id="fontScale" min="0" max="100" placeholder="Size" />
+    <input
+      type="number"
+      id="opacity"
+      min="0"
+      max="100"
+      placeholder="Opacity (%)"
+    />
+
+    <input type="color" id="textColor" value="#000000" />
     <br />
     <br />
     <button id="convertButton">Convert</button>
