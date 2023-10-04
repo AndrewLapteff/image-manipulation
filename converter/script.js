@@ -26,8 +26,12 @@ const watermarkText = document.getElementById('watermarkText')
 const opacityInput = document.getElementById('opacity')
 const textColorInput = document.getElementById('textColor')
 const fontScaleInput = document.getElementById('fontScale')
+const play = document.getElementById('play')
+const slideshowСontainer = document.getElementById('slideshow-container')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
+const images = document.querySelectorAll('.slideshow-image')
+let currentIndex = 0
 
 convertButton.addEventListener('click', () => {
   const targetColor = targetColorInp.value
@@ -74,6 +78,8 @@ convertButton.addEventListener('click', () => {
         canvas.height = new_height
         canvas.width = new_width
 
+        ctx.globalAlpha = transparency
+
         if (selectedFile2) {
           const reader2 = new FileReader()
           reader2.readAsDataURL(selectedFile2)
@@ -113,6 +119,30 @@ convertButton.addEventListener('click', () => {
               canvas.height = img.height + img2.height
               ctx.drawImage(img, 0, 0)
               ctx.drawImage(img2, 0, img.height)
+              methods(
+                targetColor,
+                replacementColor,
+                redCorrection,
+                greenCorrection,
+                blueCorrection,
+                numClones,
+                img,
+                colSplit,
+                rowSplit,
+                cropX,
+                cropY,
+                cropWidth,
+                cropHeight,
+                contrast,
+                selectedFormat,
+                shouldDownload,
+                fileName,
+                transparency,
+                text,
+                opacity,
+                textColor,
+                fontScale
+              )
             }
           }
         } else {
@@ -172,8 +202,6 @@ function methods(
   textColor,
   fontScale
 ) {
-  ctx.globalAlpha = transparency
-
   colorChanger(ctx, canvas, targetColor, replacementColor)
 
   colorCorrection(ctx, canvas, redCorrection, greenCorrection, blueCorrection)
@@ -181,7 +209,7 @@ function methods(
   if (numClones) cloneAndPositionImagesOnCanvas(ctx, canvas, img, numClones)
 
   crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight)
-
+  // images.push(img)
   contrastImage(canvas, contrast)
 
   watermark(opacity, textColor, fontScale, text)
@@ -189,7 +217,10 @@ function methods(
   canvas.style.display = 'block'
 
   const dataURL = canvas.toDataURL(`image/${selectedFormat}`) // 'image/img', 'image/webp', 'image/png'
-
+  let imgElement = new Image()
+  imgElement.src = dataURL
+  imgElement.style.cssText = 'display: none'
+  slideshowСontainer.appendChild(imgElement)
   if (shouldDownload) {
     downloadImage(dataURL, fileName, selectedFormat)
   }
@@ -325,3 +356,26 @@ function watermark(opacity, textColor, fontScale, text) {
   ctx.font = `${fontScale}px Arial`
   ctx.fillText(text, 20, canvas.height - 20)
 }
+
+play.addEventListener('click', () => {
+  const images = document.getElementById('slideshow-container').childNodes
+  function showImage(index) {
+    images.forEach((image, i) => {
+      if (i === index) {
+        image.style.display = 'block'
+      } else {
+        image.style.display = 'none'
+      }
+    })
+  }
+  function nextImage() {
+    currentIndex++
+    if (currentIndex >= images.length) {
+      currentIndex = 0
+    }
+    showImage(currentIndex)
+  }
+
+  showImage(currentIndex)
+  setInterval(nextImage, 5000)
+})
