@@ -26,10 +26,14 @@ const watermarkText = document.getElementById('watermarkText')
 const opacityInput = document.getElementById('opacity')
 const textColorInput = document.getElementById('textColor')
 const fontScaleInput = document.getElementById('fontScale')
-const play = document.getElementById('play')
+const watermarkxInput = document.getElementById('watermarkx')
+const watermarkyInput = document.getElementById('watermarky')
 const slideshowСontainer = document.getElementById('slideshow-container')
+const dominantColorSpan = document.getElementById('dominantColor')
+const delayInt = document.getElementById('delay')
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
+const play = document.getElementById('play')
 const images = document.querySelectorAll('.slideshow-image')
 let currentIndex = 0
 
@@ -60,7 +64,8 @@ convertButton.addEventListener('click', () => {
   const textColor = textColorInput.value
   const direction = mergeDirection.value
   const fontScale = fontScaleInput.value
-
+  const watermarkx = watermarkxInput.value
+  const watermarky = watermarkyInput.value
   if (selectedFile) {
     const reader = new FileReader()
 
@@ -112,7 +117,9 @@ convertButton.addEventListener('click', () => {
                 text,
                 opacity,
                 textColor,
-                fontScale
+                fontScale,
+                watermarkx,
+                watermarky
               )
             } else if (direction === 'vertical') {
               canvas.width = Math.max(img.width, img2.width)
@@ -141,7 +148,9 @@ convertButton.addEventListener('click', () => {
                 text,
                 opacity,
                 textColor,
-                fontScale
+                fontScale,
+                watermarkx,
+                watermarky
               )
             }
           }
@@ -170,7 +179,9 @@ convertButton.addEventListener('click', () => {
             text,
             opacity,
             textColor,
-            fontScale
+            fontScale,
+            watermarkx,
+            watermarky
           )
         }
       }
@@ -200,7 +211,9 @@ function methods(
   text,
   opacity,
   textColor,
-  fontScale
+  fontScale,
+  watermarkx,
+  watermarky
 ) {
   colorChanger(ctx, canvas, targetColor, replacementColor)
 
@@ -209,10 +222,11 @@ function methods(
   if (numClones) cloneAndPositionImagesOnCanvas(ctx, canvas, img, numClones)
 
   crop(img, colSplit, rowSplit, cropX, cropY, cropWidth, cropHeight)
-  // images.push(img)
   contrastImage(canvas, contrast)
 
-  watermark(opacity, textColor, fontScale, text)
+  watermark(opacity, textColor, fontScale, text, watermarkx, watermarky)
+
+  getDominantColor(canvas)
 
   canvas.style.display = 'block'
 
@@ -339,7 +353,7 @@ function contrastImage(canvas, contrast) {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
   var d = imageData.data
-  contrast = contrast / 100 + 1 // Конвертуємо у десятковий формат та зміщуємо діапазон: [0..2]
+  contrast = contrast / 100 + 1
 
   var intercept = 128 * (1 - contrast)
   for (var i = 0; i < d.length; i += 4) {
@@ -350,15 +364,24 @@ function contrastImage(canvas, contrast) {
   ctx.putImageData(imageData, 0, 0)
 }
 
-function watermark(opacity, textColor, fontScale, text) {
+function watermark(
+  opacity,
+  textColor,
+  fontScale,
+  text,
+  watermarkx,
+  watermarky
+) {
   ctx.globalAlpha = opacity
   ctx.fillStyle = textColor
   ctx.font = `${fontScale}px Arial`
-  ctx.fillText(text, 20, canvas.height - 20)
+  ctx.fillText(text, watermarkx, watermarky)
 }
 
 play.addEventListener('click', () => {
   const images = document.getElementById('slideshow-container').childNodes
+  const delay = delayInt.value * 1000
+
   function showImage(index) {
     images.forEach((image, i) => {
       if (i === index) {
@@ -377,5 +400,34 @@ play.addEventListener('click', () => {
   }
 
   showImage(currentIndex)
-  setInterval(nextImage, 5000)
+  setInterval(nextImage, delay)
 })
+
+function getDominantColor(canvas) {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+  console.log(imageData)
+  let colorCounts = {}
+  for (let i = 0; i < imageData.length; i += 4) {
+    const color = `rgb(${imageData[i]}, ${imageData[i + 1]}, ${
+      imageData[i + 2]
+    })`
+
+    if (colorCounts[color]) {
+      colorCounts[color]++
+    } else {
+      colorCounts[color] = 1
+    }
+  }
+
+  let maxCount = 0
+  let dominantColor
+
+  for (const color in colorCounts) {
+    if (colorCounts[color] > maxCount) {
+      maxCount = colorCounts[color]
+      dominantColor = color
+    }
+  }
+  dominantColorSpan.style.cssText = `background: ${dominantColor}; color: white;`
+  dominantColorSpan.textContent = `Dominant color: ${dominantColor}`
+}

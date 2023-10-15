@@ -90,6 +90,8 @@
     <br />
     <br />
     <input type="text" id="watermarkText" placeholder="Watermark Text" />
+    <input type="number" id="watermarkx" placeholder="x" />
+    <input type="number" id="watermarky" placeholder="y" />
     <input type="number" id="fontScale" min="0" max="100" placeholder="Size" />
     <input
       type="number"
@@ -111,6 +113,8 @@
     <br />
     <button id="convertButton">Convert</button>
     <button id="play">Slideshow</button>
+    <input type="number" min="0" max="1000" placeholder="delay" id="delay" />
+    <span id="dominantColor"></span>
     <br />
 
     <canvas style="display: none" id="canvas"></canvas>
